@@ -17,7 +17,8 @@ class App
   helpers do
 
     def campfire_message(mail)
-      message = mail.subject.split("Re:").first.stript
+      puts mail.inspect
+      message = mail.subject.split("Re:").first.strip
 
       if message =~ /Unsuccessful/
         message = "Epic Fail: #{message}"
