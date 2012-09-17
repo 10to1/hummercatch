@@ -43,7 +43,7 @@ class App
       end
 
       if message =~ /^Successful/
-        $redis.sadd(redis_key_for_set, redis_set_key_for_today)
+        $redis.sadd(redis_set_name, redis_set_key_for_today)
         message = "Great Success: #{message}"
       end
 
