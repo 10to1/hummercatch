@@ -14,7 +14,25 @@ class App
     }
   end
 
+  configure do
+    require 'redis'
+    if ENV["REDISTOGO_URL"]
+      uri = URI.parse(ENV["REDISTOGO_URL"])
+      $redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+    else
+      $redis = Redis.connect(:url => 'redis://127.0.0.1', :thread_safe => true)
+    end
+  end
+
   helpers do
+
+    def redis_set_name
+      "hummercatch:ordered"
+    end
+
+    def redis_set_key_for_today
+      Date.today.strftime("%Y%m%d")
+    end
 
     def campfire_message(mail)
       puts mail.inspect
@@ -25,6 +43,7 @@ class App
       end
 
       if message =~ /^Successful/
+        $redis.sadd(redis_key_for_set, redis_set_key_for_today)
         message = "Great Success: #{message}"
       end
 
@@ -45,6 +64,14 @@ class App
 
     speak campfire_message(Mail.new(params[:message]))
     status 200
+  end
+
+  get '/status' do
+    if $redis.sismember(redis_set_name, redis_set_key_for_today)
+      '{"ordered": true}'
+    else
+      '{"ordered": false}'
+    end
   end
 
   get '/' do
