@@ -67,6 +67,7 @@ class App
   end
 
   get '/status' do
+    content_type :json
     if $redis.sismember(redis_set_name, redis_set_key_for_today)
       '{"ordered": true}'
     else
@@ -75,6 +76,24 @@ class App
   end
 
   get '/' do
-    "Hummer catch catches Hubot's mail"
+    erb :home
   end
 end
+
+__END__
+
+@@ home
+
+<html>
+<head>
+<title>Catching mail for 10to1's Hubot</title>
+<link rel="shortcut icon" href="/favicon.ico">
+<style>
+</style>
+</head>
+<body>
+<h1>Hummer catch catches Hubot's mail</h1>
+<iframe width="560" height="315" src="http://www.youtube.com/embed/oxQtMHgRp5g" frameborder="0" allowfullscreen></iframe>
+<p>Status can be found <a href="/status">here</a></p>
+</body>
+</html>
