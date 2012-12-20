@@ -87,7 +87,7 @@ module Hummercatch
 
     get '/ingredients' do
       content_type :json
-      Hummercatch::Category.all.inject({}) {|r, o| r[o.id] = o.name; r}.to_json
+      Hummercatch::Ingredient.all.inject({}) {|r, o| r[o.id] = o.name; r}.to_json
     end
 
     get '/ingredients/:id' do |id|
