@@ -21,10 +21,10 @@ module Hummercatch
     # Uniq id of the food item
     attr_accessor :id
 
-    # String with the name of its category
+    # A category object
     attr_accessor :category
 
-    # String with comma seprated ingredient names
+    # An array of ingredients
     attr_accessor :ingredients
 
     # Initializes a new food item
@@ -49,8 +49,8 @@ module Hummercatch
       return @r_ingredients if @r_ingredients
 
       @r_ingredients = $redis.smembers("#{KEY}:#{id}:ingredients").collect do |id|
-        {id: id, name: $redis.get("#{KEY}:ingredient:#{id}:name")}
-      end.collect{|a| a[:name]}.join(",")
+        OpenStruct.new(id: id, name: $redis.get("#{KEY}:ingredient:#{id}:name"))
+      end
     end
 
     def self.all_ingredients
@@ -62,11 +62,9 @@ module Hummercatch
     def category
       return @r_category if @r_category
 
-      puts "#{KEY}:#{id}:categories"
       @r_category = $redis.smembers("#{KEY}:#{id}:categories").collect do |id|
-        puts "#{KEY}:category:#{id}:name"
-        {id: id, name: $redis.get("#{KEY}:category:#{id}:name")}
-      end.collect{|a| a[:name]}.first
+        OpenStruct.new(id: id, name: $redis.get("#{KEY}:category:#{id}:name"))
+      end.first
     end
 
     def self.all_ids
@@ -82,13 +80,13 @@ module Hummercatch
 
     def self.all_categories
       $redis.smembers("#{KEY}:categories").collect do |id|
-        {id: id, name: $redis.get("#{KEY}:category:#{id}:name")}
+        OpenStruct.new(id: id, name: $redis.get("#{KEY}:category:#{id}:name"))
       end
     end
 
     def self.all_ingredients
       $redis.smembers("#{KEY}:ingredients").collect do |id|
-        {id: id, name: $redis.get("#{KEY}:ingredient:#{id}:name")}
+        OpenStruct.new(id: id, name: $redis.get("#{KEY}:ingredient:#{id}:name"))
       end
     end
 
@@ -122,9 +120,9 @@ module Hummercatch
 
     def to_json
       if ingredients
-        {id: id, name: name, category: category, ingredients: ingredients}
+        {id: id, name: name, category: {category.id => category.name}, ingredients: ingredients.collect{|i| {i.id => i.name}}}
       else
-        {id: id, name: name, category: category, ingredients: []}
+        {id: id, name: name, category: {category.id => category.name}, ingredients: []}
       end
     end
   end
