@@ -75,12 +75,12 @@ module Hummercatch
 
     get '/categories' do
       content_type :json
-      Hummercatch::Food.all_categories.collect{|o| {o.id => o.name}}.to_json
+      Hummercatch::Food.all_categories.collect {|o| {o.id => o.name}}.to_json
     end
 
     get '/ingredients' do
       content_type :json
-      Hummercatch::Food.all_ingredients{|o| {o.id => o.name}}.to_json
+      Hummercatch::Food.all_ingredients.collect {|o| {o.id => o.name}}.to_json
     end
 
     get '/food' do
