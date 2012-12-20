@@ -80,7 +80,7 @@ module Hummercatch
 
     get '/ingredients' do
       content_type :json
-      Hummercatch::Food.all_ingredients.collect {|r, o| r[o.id] = o.name}.to_json
+      Hummercatch::Food.all_ingredients.collect {|r, o| r[o.id] = o.name; r}.to_json
     end
 
     get '/food' do
