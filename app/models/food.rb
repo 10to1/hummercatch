@@ -37,8 +37,8 @@ module Hummercatch
     def initialize(name, category = nil, ingredients = nil)
       @name = name
       @id = Food.uniq_id_with_name(name)
-      @r_category = category
-      @r_ingredients = ingredients if ingredients
+      @r_category = Category.new(category) if category
+      @r_ingredients = ingredients.split(",").collect{|i| Ingredient.new(i)} if ingredients
     end
 
     def create(name, category, ingredients = nil)
@@ -55,7 +55,7 @@ module Hummercatch
 
     def self.all_ingredients
       $redis.smembers("#{KEY}:ingredients").collect do |id|
-        {id: id, name: $redis.get("#{KEY}:ingredient:#{id}:name")}
+        Ingredient.new($redis.get("#{KEY}:ingredient:#{id}:name"))
       end
     end
 
@@ -63,7 +63,7 @@ module Hummercatch
       return @r_category if @r_category
 
       @r_category = $redis.smembers("#{KEY}:#{id}:categories").collect do |id|
-        OpenStruct.new(id: id, name: $redis.get("#{KEY}:category:#{id}:name"))
+        Category.new($redis.get("#{KEY}:category:#{id}:name"))
       end.first
     end
 
@@ -71,22 +71,14 @@ module Hummercatch
       $redis.smembers(KEY)
     end
 
+    def self.find(id)
+      name = $redis.get("#{KEY}:#{id}:name")
+      new(name)
+    end
+
     def self.all
       all_ids.collect do |id|
-        name = $redis.get("#{KEY}:#{id}:name")
-        new(name)
-      end
-    end
-
-    def self.all_categories
-      $redis.smembers("#{KEY}:categories").collect do |id|
-        OpenStruct.new(id: id, name: $redis.get("#{KEY}:category:#{id}:name"))
-      end
-    end
-
-    def self.all_ingredients
-      $redis.smembers("#{KEY}:ingredients").collect do |id|
-        OpenStruct.new(id: id, name: $redis.get("#{KEY}:ingredient:#{id}:name"))
+        find(id)
       end
     end
 
@@ -97,18 +89,15 @@ module Hummercatch
 
 
       # Category
-      category_id = Food.uniq_id_with_name(@r_category)
-      $redis.sadd("#{KEY}:categories", category_id)
-      $redis.set("#{KEY}:category:#{category_id}:name", @r_category)
+      @r_category.save
+      category_id = @r_category.id
       $redis.sadd("#{KEY}:category:#{category_id}:food", id)
-      puts "$redis.sadd(#{KEY}:#{id}:categories), #{category_id})"
       $redis.sadd("#{KEY}:#{id}:categories", category_id)
 
      # Ingredient
-      (@r_ingredients || "").split(",").collect(&:strip).each do |ingredient|
-        ingredient_id = Food.uniq_id_with_name(ingredient)
-        $redis.sadd("#{KEY}:ingredients", ingredient_id)
-        $redis.set("#{KEY}:ingredient:#{ingredient_id}:name", ingredient)
+      (@r_ingredients || []).each do |ingredient|
+        ingredient.save
+        ingredient_id = ingredient.id
         $redis.sadd("#{KEY}:ingredient:#{ingredient_id}:food", id)
         $redis.sadd("#{KEY}:#{id}:ingredients", ingredient_id)
       end
@@ -118,7 +107,7 @@ module Hummercatch
       Digest::MD5.hexdigest(name)[0..5]
     end
 
-    def to_json
+    def as_json
       if ingredients
         {id: id, name: name, category: {category.id => category.name}, ingredients: ingredients.collect{|i| {i.id => i.name}}}
       else

@@ -75,17 +75,31 @@ module Hummercatch
 
     get '/categories' do
       content_type :json
-      Hummercatch::Food.all_categories.inject({}) {|r, o| r[o.id] = o.name; r}.to_json
+      Hummercatch::Category.all.inject({}) {|r, o| r[o.id] = o.name; r}.to_json
+    end
+
+    get '/categories/:id' do |id|
+      content_type :json
+      category = Hummercatch::Category.find(id)
+      foodz = category.food.collect(&:as_json)
+      {:name => category.name, :food => foodz}.to_json
     end
 
     get '/ingredients' do
       content_type :json
-      Hummercatch::Food.all_ingredients.inject({}) {|r, o| r[o.id] = o.name; r}.to_json
+      Hummercatch::Category.all.inject({}) {|r, o| r[o.id] = o.name; r}.to_json
+    end
+
+    get '/ingredients/:id' do |id|
+      content_type :json
+      ingredient = Hummercatch::Ingredient.find(id)
+      foodz = ingredient.food.collect(&:as_json)
+      {:name => ingredient.name, :food => foodz}.to_json
     end
 
     get '/food' do
       content_type :json
-      foodz = Hummercatch::Food.all.collect(&:to_json)
+      foodz = Hummercatch::Food.all.collect(&:as_json)
       foodz.to_json
     end
   end

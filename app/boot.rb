@@ -8,7 +8,10 @@ require 'sinatra/base'
 require "json"
 
 require 'hummercatch'
+
 require 'models/food'
+require 'models/ingredient'
+require 'models/category'
 
 require 'app'
 
