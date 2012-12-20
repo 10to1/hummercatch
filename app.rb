@@ -83,6 +83,22 @@ class App
     erb :home
   end
 
+  get '/categories' do
+    categories = [{:id=>"387ff3", :name=>"Kaas en Vlees"},
+ {:id=>"e6b7e1", :name=>"Vis"},
+ {:id=>"182971", :name=>"Warm"},
+ {:id=>"004277", :name=>"Kip"},
+ {:id=>"606848", :name=>"Diversen"},
+ {:id=>"fac88d", :name=>"Salades"},
+ {:id=>"749471", :name=>"Panini's"},
+ {:id=>"2dcd68", :name=>"Soepen"},
+ {:id=>"9c0db8", :name=>"Dranken"},
+ {:id=>"0f41e8", :name=>"Ontbijt"},
+ {:id=>"409730", :name=>"specialiteiten"}]
+    content_type :json
+    categories.to_json
+  end
+
   get '/food' do
     food = [{:id=>"c05550", :name=>"Kaas", :category=>"Kaas en Vlees"},
  {:id=>"ee5d29", :name=>"Hesp", :category=>"Kaas en Vlees"},
