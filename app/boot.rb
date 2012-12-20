@@ -12,5 +12,5 @@ require 'models/food'
 
 require 'app'
 
-REDIS_URL = 'redis://127.0.0.1'
-$redis = Redis.connect(:url => REDIS_URL, :thread_safe => true)
+uri = URI.parse(Hummercatch.config.redis_uri)
+$redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)

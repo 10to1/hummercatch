@@ -14,12 +14,6 @@ module Hummercatch
       }
     end
 
-    configure do
-      require 'redis'
-      uri = URI.parse(Hummercatch.config.redis_uri)
-      $redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
-    end
-
     helpers do
 
       def ordered?
