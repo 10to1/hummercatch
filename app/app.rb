@@ -6,12 +6,72 @@ require "mail"
 
 module Hummercatch
   class App < Sinatra::Base
+
+    register Sinatra::Auth::Github
+
+    enable :sessions
+    set    :session_secret, "DA_SEKRET"
+
+    class Octobouncer < Sinatra::Base
+      # Handle bad authenication, clears the session and redirects to login.
+      get '/unauthenticated' do
+        if session[:user].nil?
+          redirect '/'
+        else
+          session.clear
+          redirect '/403.html'
+        end
+      end
+    end
+
+    set :github_options, {
+      :secret    => Hummercatch.config.secret,
+      :client_id => Hummercatch.config.client_id,
+      :failure_app => Octobouncer,
+      :organization => Hummercatch.config.gh_org,
+      :github_scopes => 'user,offline_access'
+    }
+
+    Broach.settings = {
+      'account' => Hummercatch.config.campfire_account,
+      'token' => Hummercatch.config.campfire_token,
+      'use_ssl' => true
+    }
+
     before do
-      Broach.settings = {
-        'account' => Hummercatch.config.campfire_account,
-        'token' => Hummercatch.config.campfire_token,
-        'use_ssl' => true
-      }
+      content_type :json
+
+      session_not_required = request.path_info =~ /\/login/ ||
+                             request.path_info =~ /\/auth/ ||
+                             request.path_info =~ /\/images\/art\/.*.png/
+
+      if session_not_required || @current_user
+        true
+      else
+        login
+      end
+    end
+
+    def api_request
+      !!params[:token] || !!request.env["HTTP_AUTHORIZATION"]
+    end
+
+    def login
+      if api_request
+        login = request.env["HTTP_X_CATCH_LOGIN"] || params[:login] || ""
+        user = User.find_by_login(login)
+      else
+        github_organization_authenticate!(Hummercatch.config.gh_org)
+        user   = User.find(github_user.login)
+        user ||= User.create(github_user.login,github_user.email)
+      end
+
+      halt 401 if !user
+      @current_user = session[:user] = user
+    end
+
+    def current_user
+      @current_user
     end
 
     helpers do
@@ -70,6 +130,7 @@ module Hummercatch
     end
 
     get '/' do
+      content_type :html
       erb :home
     end
 

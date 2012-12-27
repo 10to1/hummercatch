@@ -5,6 +5,7 @@ require "bundler/setup"
 
 require 'redis'
 require 'sinatra/base'
+require 'sinatra_auth_github'
 require "json"
 
 require 'hummercatch'
@@ -12,6 +13,7 @@ require 'hummercatch'
 require 'models/food'
 require 'models/ingredient'
 require 'models/category'
+require 'models/user'
 
 require 'app'
 
