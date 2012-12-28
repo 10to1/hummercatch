@@ -45,6 +45,15 @@ module Hummercatch
       self.class.new(name, category, ingredients).save
     end
 
+    # Returns the name of the food, will always try to pretty print it.
+    #
+    # E.g. PINK PANTER => Pink Panter
+    #
+    # Returns a String
+    def name
+      @name.split(" ").collect(&:downcase).collect(&:capitalize).join(" ")
+    end
+
     def ingredients
       return @r_ingredients if @r_ingredients
 
