@@ -15,6 +15,8 @@ require 'models/ingredient'
 require 'models/category'
 require 'models/user'
 
+require 'hubot'
+
 require 'app'
 
 uri = URI.parse(Hummercatch.config.redis_uri)
