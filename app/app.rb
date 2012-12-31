@@ -58,8 +58,13 @@ module Hummercatch
 
     def login
       if api_request
-        login = request.env["HTTP_X_CATCH_LOGIN"] || params[:login] || ""
-        user = User.find_by_login(login)
+        token = request.env["HTTP_AUTHORIZATION"] || params[:token] || ""
+        login = request.env["HTTP_X_CAMPFIRE_ID"] || params[:login] || ""
+        if token == "SYSTEM_WIDE"
+          user = User.find(login)
+        else
+          user = User.find_by_token(token)
+        end
       else
         github_organization_authenticate!(Hummercatch.config.gh_org)
         user   = User.find(github_user.login)

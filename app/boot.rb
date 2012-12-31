@@ -14,6 +14,11 @@ require 'models/food'
 require 'models/ingredient'
 require 'models/category'
 require 'models/user'
+require 'models/order'
+
+require 'models/tag'
+require 'models/parser'
+require 'models/token'
 
 require 'hubot'
 

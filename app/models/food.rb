@@ -85,6 +85,18 @@ module Hummercatch
       new(name)
     end
 
+    def self.find_by_name(name)
+      all.detect do |f|
+        f.name.downcase =~ /#{name}/i
+      end
+    end
+
+    def self.found_in_string(string)
+      all.detect do |f|
+        string =~ /#{f.name}/i
+      end
+    end
+
     def self.all
       all_ids.collect do |id|
         find(id)

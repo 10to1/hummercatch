@@ -1,5 +1,8 @@
 module Hummercatch
 
+  # The base exception class raised when errors are encountered.
+  class Error < StandardError; end
+
   def self.config
     OpenStruct.new \
     :campfire_account => (ENV["campfire_account"] || yaml['campfire_account']),

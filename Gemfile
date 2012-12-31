@@ -22,4 +22,28 @@ group :development, :test do
   # Process manager for applications with multiple components
   # [foreman](http://github.com/ddollar/foreman)
   gem 'foreman', '~> 0.60.2'
+
+  # Turn provides a set of alternative runners for MiniTest, both colorfu...
+  # [turn](http://rubygems.org/gems/turn)
+  gem 'turn', '~> 0.9.6'
+end
+
+group :test do
+  # Adding rake for Travis.
+  gem 'rake'
+
+  # [rack-test](http://github.com/brynary/rack-test)
+  gem 'rack-test', '~> 0.6.2'
+
+  # minitest provides a complete suite of testing facilities...
+  # [minitest](https://github.com/seattlerb/minitest)
+  gem 'minitest'
+
+  # Adds color to your MiniTest output
+  gem "minitest-rg", "~> 1.0.0"
+
+  # [mocha](http://gofreerange.com/mocha/docs)
+  gem 'mocha', '~> 0.13.0'
+
+  gem 'guard-minitest'
 end
