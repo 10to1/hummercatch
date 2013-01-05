@@ -14,6 +14,7 @@ require 'rack/test'
 
 require 'boot'
 
+
 include Hummercatch
 include Rack::Test::Methods
 

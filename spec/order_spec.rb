@@ -25,10 +25,7 @@ describe Order do
       :sauce => nil,
       :size => :middle,
       :garnish => nil,
-      :bread_type => :fitness},
-    " een salade spek" => {
-      :food_id
-    }
+      :bread_type => :fitness}
   }.each do |string, value_hash|
 
     it "should understand #{string}" do
