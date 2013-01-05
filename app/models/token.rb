@@ -40,7 +40,7 @@ module Hummercatch
 
     # Print this Token in a pretty way
     def to_s
-      @word << '(' << @tags.join(', ') << ') '
+      "#{@word}: #{@tags}"
     end
   end
 end
