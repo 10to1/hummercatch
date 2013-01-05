@@ -26,6 +26,12 @@ group :development, :test do
   # Turn provides a set of alternative runners for MiniTest, both colorfu...
   # [turn](http://rubygems.org/gems/turn)
   gem 'turn', '~> 0.9.6'
+
+  # Using guard to run the tests autmoatically on file change.
+  # Just run `guard` in the root of the folder
+  #
+  # [guard](https://github.com/guard/guard)
+  gem 'guard', '~> 1.5.0'
 end
 
 group :test do
@@ -46,4 +52,12 @@ group :test do
   gem 'mocha', '~> 0.13.0'
 
   gem 'guard-minitest'
+end
+
+# Workaround for Heroku:
+# [More info](http://www.johnplummer.com/rails/heroku-error-conditional-rbfsevent-gem.html)
+group :test, :darwin do
+  # OS X
+  gem 'terminal-notifier-guard'
+  gem 'rb-fsevent', :require => false
 end
