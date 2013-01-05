@@ -10,6 +10,11 @@ module Hummercatch
       @value = value
     end
 
+    def salad?
+      return false unless type == :salad
+      !!value
+    end
+
     def to_s
       "#{type} -> #{value}"
     end
@@ -21,6 +26,7 @@ module Hummercatch
         if t = scan_for_bread_types(token) then token.tag(t); next end
         if t = scan_for_garnish(token) then token.tag(t); next end
         if t = scan_for_salad(token) then token.tag(t); next end
+        if t = scan_for_prepositions(token) then token.tag(t); next end
         scan_for_food_items(token)
       end
     end
@@ -28,10 +34,10 @@ module Hummercatch
     def self.food_items
       @food_items ||= Food.all.inject([]) do |result, food|
         parts = food.name.downcase.split(" ").uniq.reject do |p|
-          %w(+ - met en cl).include?(p) || p.length < 2
+          %w(+ - met en cl broodje).include?(p) || p.length < 2
         end
         result << parts.inject({}) do |result, part|
-          result[/\b#{part}\b/] = food.name
+          result[/\b#{part}\b/] = food
           result
         end
         result
@@ -63,9 +69,11 @@ module Hummercatch
         /groo?te?/ => :large,
         /large/ => :large,
         /midden?/ => :middle,
+        /medium/ => :middle,
         /middle/ => :middle,
         /small/ => :small,
-        /kleine?/ => :small
+        /kleine?/ => :small,
+        /sandwich/ => :sandwich
       }
     end
 
@@ -90,8 +98,16 @@ module Hummercatch
       scan_for token, :salad,
       {
         /slaatje/ => true,
-        /salade/ => true,
+        /salade?/ => true,
         /konijnevoer/ => true
+      }
+    end
+
+    def self.scan_for_prepositions(token)
+      scan_for token, :preposition,
+      {
+        /met/ => true,
+        /zonder/ => true
       }
     end
 
