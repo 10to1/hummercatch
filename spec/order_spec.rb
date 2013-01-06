@@ -29,11 +29,7 @@ describe Order do
   }.each do |string, value_hash|
 
     it "should understand #{string}" do
-      order = Order.orders_from_freeform(1, string).first
-
-      value_hash.each do |key, value|
-        assert_equal value, order.send(key)
-      end
+      assert_equal value_hash, Parser.new.parse(string).first
     end
   end
 end

@@ -49,54 +49,6 @@ module Hummercatch
       !!@garnish
     end
 
-    def self.orders_from_freeform(by, string)
-      string = string.downcase
-      orders = []
-      combination.each do |s|
-        next unless string.index(" #{s} ")
-        string.split(s).each do |s|
-          orders << orders_from_freeform(by, s)
-        end
-      end
-
-      return orders unless orders.empty?
-
-      order = new(by: by)
-      # Find a food item
-      if food = Food.found_in_string(string)
-        order.food_id = food.id
-        string = string.gsub(food.name.downcase, "")
-      end
-
-      # Extract sauce
-      if sauce = self.sauces.detect{|s| string =~ /#{s}/i}
-        order.sauce = sauce
-        string = string.gsub(/#{sauce}/i, "")
-      end
-
-      # Extract bread type
-      if bread_type = self.bread_types.detect{|s| string =~ /#{s}/i}
-        order.bread_type = bread_type
-        string = string.gsub(/#{bread_type}/, "")
-      end
-
-      # Extract size
-      self.sizes.each do |k, values|
-        if size = values.detect{|v| string =~ /#{v}/}
-          order.size = k
-          string = string.gsub(/#{size}/, "")
-          break
-        end
-      end
-
-      # Extract garnish
-      if garnish = self.garnishes.detect{|s| string =~ /#{s}/i}
-        order.garnish = true
-        string = string.gsub(/#{garnish}/, "")
-      end
-      [order]
-    end
-
     def save
       raise Error, ":by is required" unless options[:by]
       unless options[:food] || options[:metadata]
