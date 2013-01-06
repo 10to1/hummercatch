@@ -15,7 +15,11 @@ module Hummercatch
     end
 
     post "/order" do
-
+      order_string = params[:order]
+      s = Parser.new.parse(order_string).collect do |hash|
+        Order.new(hash).to_hubot
+      end.join(" en een ")
+      " => #{s}"
     end
 
     get "/food" do

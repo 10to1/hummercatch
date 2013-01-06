@@ -2,6 +2,7 @@ module Hummercatch
   class Parser
 
     def parse(text)
+      raise "Geen text" unless text
       token_array = tokenize(text)
       orders = token_array.inject([]) do |orders, tokens|
         parts = {}
