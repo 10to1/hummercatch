@@ -41,8 +41,8 @@ module Hummercatch
       @r_ingredients = ingredients.split(",").collect{|i| Ingredient.new(i)} if ingredients
     end
 
-    def create(name, category, ingredients = nil)
-      self.class.new(name, category, ingredients).save
+    def self.create(name, category, ingredients = nil)
+      new(name, category, ingredients).save
     end
 
     # Returns the name of the food, will always try to pretty print it.
@@ -110,17 +110,21 @@ module Hummercatch
 
 
       # Category
-      @r_category.save
-      category_id = @r_category.id
-      $redis.sadd("#{KEY}:category:#{category_id}:food", id)
-      $redis.sadd("#{KEY}:#{id}:categories", category_id)
+      if @r_category
+        @r_category.save
+        category_id = @r_category.id
+        $redis.sadd("#{KEY}:category:#{category_id}:food", id)
+        $redis.sadd("#{KEY}:#{id}:categories", category_id)
+      end
 
-     # Ingredient
-      (@r_ingredients || []).each do |ingredient|
-        ingredient.save
-        ingredient_id = ingredient.id
-        $redis.sadd("#{KEY}:ingredient:#{ingredient_id}:food", id)
-        $redis.sadd("#{KEY}:#{id}:ingredients", ingredient_id)
+      if @r_ingredients
+        # Ingredient
+        (@r_ingredients || []).each do |ingredient|
+          ingredient.save
+          ingredient_id = ingredient.id
+          $redis.sadd("#{KEY}:ingredient:#{ingredient_id}:food", id)
+          $redis.sadd("#{KEY}:#{id}:ingredients", ingredient_id)
+        end
       end
     end
 
