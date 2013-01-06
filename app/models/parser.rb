@@ -10,9 +10,8 @@ module Hummercatch
             metadata = tokens.slice!(index..-1).collect(&:word)
           end
         end
-        food = extract_most_likely_matched_food(tokens)
         if tokens.collect(&:tags).flatten.any? {|t| t.salad?}
-          food = extract_most_likely_matched_food(tokens)
+          food = extract_most_likely_matched_food(tokens, true)
           parts[:food_id] = food.id
           parts[:metadata] =  metadata.join(" ") if metadata
         else
@@ -23,6 +22,7 @@ module Hummercatch
           parts[:sauce] = extract_type_from_tokens(:sauce, tokens)
           parts[:metadata] =  metadata.join(" ") if metadata
         end
+        parts = parts.reject{|k,v| v.nil?}
         orders << parts
       end
       orders
@@ -51,9 +51,12 @@ module Hummercatch
       distance
     end
 
-    def extract_most_likely_matched_food(tokens)
+    def extract_most_likely_matched_food(tokens, salad = false)
       food_tokens = tokens.select{|t| t.tags.collect(&:type).include? :food}
       tags = tokens.collect(&:tags).flatten.reject{|t| t.type != :food}
+      if salad
+        tags = tags.select{|t| t.value.category.name == "SALADES"}
+      end
       if ordered_tags = tags.group_by{|t| t.value.name}.group_by{|k,v| v.count}
         most_occurring_tags = ordered_tags.fetch(ordered_tags.keys.max)
         if most_occurring_tags.count == 1

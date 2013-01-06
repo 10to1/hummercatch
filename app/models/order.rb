@@ -37,12 +37,23 @@ module Hummercatch
       @id         = options[:id]
       @size       = options[:size]
       @sauce      = options[:sauce]
-      @food_id       = options[:food_id]
+      @bread_type = options[:bread_type]
+      @food_id    = options[:food_id]
       @metadata   = options[:metadata]
       @for        = options[:for]
       @by         = options[:by]
       @quantity   = options[:quantity]
       @ordered_at = options[:ordered_at]
+    end
+
+    def to_hubot
+      parts = []
+      parts << @size if @size
+      parts << @bread_type if @bread_type
+      parts << Food.find(@food_id).name if @food_id
+      parts << "met #{@sauce}" if @sauce
+      parts << @metadata if @metadata
+      parts.join(" ")
     end
 
     def garnish?
