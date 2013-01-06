@@ -19,7 +19,10 @@ describe Order do
     "midden fitness pollo" => {
       :food_id => "47756c",
       :size => :middle,
-      :bread_type => :fitness}
+      :bread_type => :fitness},
+    "salade spek" => {
+      :food_id => "f6f819",
+    }
   }.each do |string, value_hash|
 
     it "should understand #{string}" do

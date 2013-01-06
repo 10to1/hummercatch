@@ -15,6 +15,7 @@ module Hummercatch
           parts[:food_id] = food.id
           parts[:metadata] =  metadata.join(" ") if metadata
         else
+          food = extract_most_likely_matched_food(tokens)
           parts[:size] = extract_type_from_tokens(:size, tokens)
           parts[:garnish] = extract_type_from_tokens(:garnish, tokens)
           parts[:bread_type] = extract_type_from_tokens(:bread_type, tokens)
