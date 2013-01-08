@@ -7,7 +7,8 @@ module Hummercatch
       orders = token_array.inject([]) do |orders, tokens|
         parts = {}
         if index = tokens.find_index {|t| t.tags.collect(&:type).include?:preposition}
-          unless tokens[index+1].tags.collect(&:type).include?(:sauce)
+          next_token_tags = tokens[index+1].tags.collect(&:type)
+          unless next_token_tags.include?(:sauce) || next_token_tags.include?(:food)
             metadata = tokens.slice!(index..-1).collect(&:word)
           end
         end

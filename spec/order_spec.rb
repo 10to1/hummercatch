@@ -22,6 +22,11 @@ describe Order do
       :bread_type => :fitness},
     "salade spek" => {
       :food_id => "f6f819",
+    },
+    "een klein broodjes fitness met oude kaas" => {
+      :size => :small,
+      :bread_type => :fitness,
+      :food_id => "8c0589"
     }
   }.each do |string, value_hash|
 
