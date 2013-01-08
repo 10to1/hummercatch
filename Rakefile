@@ -18,5 +18,7 @@ end
 
 desc "Open an pry session with Yesplan loaded"
 task :console do
-  sh "pry -r ./app/boot"
+  require "pry"
+  include Hummercatch
+  binding.pry
 end
