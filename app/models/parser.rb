@@ -100,6 +100,7 @@ module Hummercatch
       text.gsub!(/\bslaatje\b/, "salade")
       text.gsub!(/\hawaii?\b/, "hawai")
       text.gsub!("heps", "heps")
+      text.gsub!(/\bkip curry\b/, "kipcurry")
       text.gsub!(/sa(m|n)dwh?ich/, "sandwich")
       text.gsub!(/kippen?wit/, "kippenwit")
       text
