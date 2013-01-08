@@ -16,7 +16,11 @@ module Hummercatch
     end
 
     def to_s
-      "#{type} -> #{value}"
+      if value.respond_to?(:name)
+        "#{type} -> #{value.name}"
+      else
+        "#{type} -> #{value}"
+      end
     end
 
     def self.scan(tokens, options)
