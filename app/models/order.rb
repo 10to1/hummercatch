@@ -36,6 +36,7 @@ module Hummercatch
       options = self.class.sensible_defaults.merge(options)
       @id         = options[:id]
       @size       = options[:size]
+      @garnish    = options[:garnish]
       @sauce      = options[:sauce]
       @bread_type = options[:bread_type]
       @food_id    = options[:food_id]
@@ -50,6 +51,7 @@ module Hummercatch
       parts = []
       parts << @size if @size
       parts << @bread_type if @bread_type
+      parts << (@garnish ? "smos" : "") if @garnish
       parts << Food.find(@food_id).name if @food_id
       parts << "met #{@sauce}" if @sauce
       parts << @metadata if @metadata
