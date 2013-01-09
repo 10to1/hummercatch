@@ -62,7 +62,7 @@ module Hummercatch
         /andalouse/ => :andalouse,
         /samurai/ => :samurai,
         /cocktailsaus/ => :cocktailsaus,
-        /mayo/ => :mayo,
+        /mayo/ => :mayonaise,
         /ketchup/ => :ketchup
       }
     end

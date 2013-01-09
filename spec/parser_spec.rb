@@ -38,6 +38,38 @@ describe Parser do
 
   end
 
+  describe "fetching metadata" do
+    it "should set metadata as the string after a preposition" do
+      string = "klein broodje hesp zonder boter"
+      Parser.new.parse(string).first[:metadata].must_equal "zonder boter"
+    end
+
+    it "shouldn't set metadata if not found" do
+      string = "klein broodje hesp"
+      Parser.new.parse(string).first[:metadata].must_be_nil
+    end
+
+    it "should not set preposition + sauce as metadata" do
+      string = "klein broodje hesp met samurai"
+      Parser.new.parse(string).first[:metadata].must_be_nil
+    end
+
+    it "should not set preposition + food as metadata" do
+      string = "klein broodje hesp met kaas"
+      Parser.new.parse(string).first[:metadata].must_be_nil
+    end
+
+    it "should set preposition + food + preposition as metada" do
+      string = "klein broodje hesp met kaas zonder augurken"
+      Parser.new.parse(string).first[:metadata].must_equal "zonder augurken"
+    end
+
+    it "should set handle preposition thingie and preposition thingie" do
+      string = "klein broodje hesp zonder augurken en zonder pickles"
+      Parser.new.parse(string).first[:metadata].must_equal "zonder augurken en zonder pickles"
+    end
+  end
+
   describe "tokenizing" do
 
     describe "parsing 'samdwich met oude kaas en tomaat en een sandwich met hesp'" do

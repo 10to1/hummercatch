@@ -49,13 +49,25 @@ module Hummercatch
 
     def to_hubot
       parts = []
-      parts << @size if @size
-      parts << @bread_type if @bread_type
-      parts << (@garnish ? "smos" : "") if @garnish
-      parts << Food.find(@food_id).name if @food_id
+      parts << translate(@size) if @size
+      parts << translate(@bread_type) if @bread_type
+      parts << translate(:garnish) if @garnish
+      parts << Food.find(@food_id).name.downcase if @food_id
       parts << "met #{@sauce}" if @sauce
       parts << @metadata if @metadata
       parts.join(" ")
+    end
+
+    def translate(symbol)
+      translations.fetch(symbol, symbol.to_s)
+    end
+
+    def translations
+      {
+        large: "grote", small: "kleine", middle: "midden",
+        garnish: "smos",
+        salad: "salade"
+      }
     end
 
     def garnish?

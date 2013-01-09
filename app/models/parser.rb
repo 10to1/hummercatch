@@ -6,12 +6,7 @@ module Hummercatch
       token_array = tokenize(text)
       orders = token_array.inject([]) do |orders, tokens|
         parts = {}
-        if index = tokens.find_index {|t| t.tags.collect(&:type).include?:preposition}
-          next_token_tags = tokens[index+1].tags.collect(&:type)
-          unless next_token_tags.include?(:sauce) || next_token_tags.include?(:food)
-            metadata = tokens.slice!(index..-1).collect(&:word)
-          end
-        end
+        metadata = extract_metadata(tokens)
         if tokens.collect(&:tags).flatten.any? {|t| t.salad?}
           food = extract_most_likely_matched_food(tokens, true)
           parts[:food_id] = food.id
@@ -29,6 +24,34 @@ module Hummercatch
         orders << parts
       end
       orders
+    end
+
+    def find_tag_with_type(token_array, type)
+      token_array.find_index do |token|
+        token.tags.collect(&:type).include? type
+      end
+    end
+
+    def contains_tag_with_type?(token_array, type)
+      !!find_tag_with_type(token_array, type)
+    end
+
+    def extract_metadata(tokens)
+      metadata = []
+      if index = find_tag_with_type(tokens, :preposition)
+        if next_index = find_tag_with_type(tokens[index+1..-1], :preposition)
+          metadata << d = extract_metadata(tokens[(index + 1 + next_index)..-1])
+          tokens = tokens[0..(index + next_index)]
+        end
+        next_token_tags = tokens[index+1].tags.collect(&:type)
+        unless next_token_tags.include?(:sauce) || next_token_tags.include?(:food)
+          metadata << d = tokens.slice(index..-1).collect(&:word)
+          puts "outer : #{d}"
+        end
+
+      end
+      data = metadata.reverse.flatten
+      data.empty? ? nil : data
     end
 
     def extract_type_from_tokens(type, tokens)
