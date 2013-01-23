@@ -47,6 +47,12 @@ module Hummercatch
       @ordered_at = options[:ordered_at]
     end
 
+    def self.orders_from_string(string)
+      Parser.new.parse(string).collect do |hash|
+        Order.new(hash)
+      end
+    end
+
     def to_hubot
       parts = []
       parts << translate(@size) if @size

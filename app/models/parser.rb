@@ -8,15 +8,15 @@ module Hummercatch
         parts = {}
         metadata = extract_metadata(tokens)
         if tokens.collect(&:tags).flatten.any? {|t| t.salad?}
-          food = extract_most_likely_matched_food(tokens, true)
-          parts[:food_id] = food.id
+          food = extract_most_likely_matched_food(tokens, true) unless tags_with_type(tokens, :food).empty?
+          parts[:food_id] = food.id if food
           parts[:metadata] =  metadata.join(" ") if metadata
         else
-          food = extract_most_likely_matched_food(tokens)
+          food = extract_most_likely_matched_food(tokens) unless tags_with_type(tokens, :food).empty?
           parts[:size] = extract_type_from_tokens(:size, tokens)
           parts[:garnish] = extract_type_from_tokens(:garnish, tokens)
           parts[:bread_type] = extract_type_from_tokens(:bread_type, tokens)
-          parts[:food_id] = food.id
+          parts[:food_id] = food.id if food
           parts[:sauce] = extract_type_from_tokens(:sauce, tokens)
           parts[:metadata] =  metadata.join(" ") if metadata
         end
@@ -24,6 +24,11 @@ module Hummercatch
         orders << parts
       end
       orders
+    end
+
+    def tags_with_type(token_array, type)
+      food_tokens = token_array.select{|t| t.tags.collect(&:type).include? :food}
+      tags = food_tokens.collect(&:tags).flatten.reject{|t| t.type != :food || t.value == ""}.flatten
     end
 
     def find_tag_with_type(token_array, type)
@@ -79,7 +84,7 @@ module Hummercatch
 
     def extract_most_likely_matched_food(tokens, salad = false)
       food_tokens = tokens.select{|t| t.tags.collect(&:type).include? :food}
-      tags = tokens.collect(&:tags).flatten.reject{|t| t.type != :food}
+      tags = tokens.collect(&:tags).flatten.reject{|t| t.type != :food || t.value == ""}.flatten
       if salad
         tags = tags.select{|t| t.value.category.name == "SALADES"}
       end
@@ -107,7 +112,7 @@ module Hummercatch
 
     def tokenize(text)
       text = normalize(text)
-      text.split("en een").inject([]) do |orders, string|
+      text.split(/en een|[0-9]/).inject([]) do |orders, string|
         tokens = string.split(' ').collect { |word| Token.new(word)}
         Tag.scan(tokens, {})
         orders << tokens
@@ -120,10 +125,12 @@ module Hummercatch
       text.gsub!(/\bsamo?urai\b/, 'samurai')
       text.gsub!(/\ben ne\b/, 'en een')
       text.gsub!(/(en|\+) (een|ne)/, 'en een')
+      text.gsub!(/\+ ([0-9]+)/, 'en \1')
       text.gsub!("+ curryrol", 'en een curryrol')
       text.gsub!(/\bslaatje\b/, "salade")
       text.gsub!(/\hawaii?\b/, "hawai")
-      text.gsub!("heps", "heps")
+      text.gsub!(/\poll?o\b/, "pollo")
+      text.gsub!("heps", "hesp")
       text.gsub!(/\bkip curry\b/, "kipcurry")
       text.gsub!(/sa(m|n)dwh?ich/, "sandwich")
       text.gsub!(/kippen?wit/, "kippenwit")
