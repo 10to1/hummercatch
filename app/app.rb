@@ -2,6 +2,7 @@
 require "rubygems"
 require 'sinatra'
 require "broach"
+require "hipchat"
 require "mail"
 
 module Hummercatch
@@ -37,6 +38,8 @@ module Hummercatch
       'token' => Hummercatch.config.campfire_token,
       'use_ssl' => true
     }
+
+
 
     before do
       content_type :json
@@ -112,10 +115,19 @@ module Hummercatch
 
       def speak(message)
         campfire_room.speak(message)
+        hipchat_room.send(Hummercatch.config.hipchat_user, message)
       end
 
       def campfire_room
         Broach::Room.find_by_name("General")
+      end
+
+      def hipchat_room
+        hipchat_client[Hummercatch.config.hipchat_room]
+      end
+
+      def hipchat_client
+        @hipchat_client ||= HipChat::Client.new(Hummercatch.config.hipchat_token)
       end
     end
 
