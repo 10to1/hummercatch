@@ -10,10 +10,6 @@ gem "mail", "~> 2.4.4"
 # [sinatra_auth_github](http://github.com/atmos/sinatra_auth_github)
 gem 'sinatra_auth_github', '~> 0.12.0'
 
-# Ruby library to interact with HipChat
-# [hipchat](https://github.com/hipchat/hipchat-rb)
-gem 'hipchat', '~> 0.7.0'
-
 # [redis](https://github.com/redis/redis-rb)
 gem 'redis', '~> 3.0.1'
 gem 'rake'

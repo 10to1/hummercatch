@@ -21,12 +21,6 @@ GEM
     guard-minitest (0.5.0)
       guard (>= 0.4)
     hashie (1.2.0)
-    hipchat (0.7.0)
-      httparty
-      httparty
-    httparty (0.10.2)
-      multi_json (~> 1.0)
-      multi_xml (>= 0.5.2)
     i18n (0.6.1)
     json (1.7.5)
     listen (0.5.3)
@@ -43,7 +37,6 @@ GEM
     mocha (0.13.0)
       metaclass (~> 0.0.1)
     multi_json (1.5.0)
-    multi_xml (0.5.3)
     multipart-post (1.1.5)
     nap (0.5.1)
     oauth2 (0.5.2)
@@ -105,7 +98,6 @@ DEPENDENCIES
   foreman (~> 0.60.2)
   guard (~> 1.5.0)
   guard-minitest
-  hipchat (~> 0.7.0)
   json (~> 1.7.5)
   mail (~> 2.4.4)
   minitest
