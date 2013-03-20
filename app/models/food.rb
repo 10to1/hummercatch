@@ -134,11 +134,10 @@ module Hummercatch
     end
 
     def as_json
-      if ingredients
-        {id: id, name: name, category: {category.id => category.name}, ingredients: ingredients.collect{|i| {i.id => i.name}}}
-      else
-        {id: id, name: name, category: {category.id => category.name}, ingredients: []}
-      end
+      h = {id: id, name: name, category: {}, ingredients: []}
+      h.merge({category.id => category.name}) if category
+      h.merge({ingredients: ingredients.collect{|i| {i.id => i.name}}}) if ingredients
+      h
     end
   end
 end
