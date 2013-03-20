@@ -1,4 +1,3 @@
-source :rubygems
 gem "sinatra"
 
 gem 'json', '~> 1.7.5'
