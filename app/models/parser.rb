@@ -129,7 +129,7 @@ module Hummercatch
       text.gsub!("+ curryrol", 'en een curryrol')
       text.gsub!(/\bslaatje\b/, "salade")
       text.gsub!(/\hawaii?\b/, "hawai")
-      text.gsub!(/\poll?o\b/, "pollo")
+      text.gsub!(/\bpoll?o\b/, "pollo")
       text.gsub!("heps", "hesp")
       text.gsub!(/\bkip curry\b/, "kipcurry")
       text.gsub!(/sa(m|n)dwh?ich/, "sandwich")
