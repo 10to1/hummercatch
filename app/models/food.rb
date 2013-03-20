@@ -82,6 +82,7 @@ module Hummercatch
 
     def self.find(id)
       name = $redis.get("#{KEY}:#{id}:name")
+      return nil unless name
       new(name)
     end
 
