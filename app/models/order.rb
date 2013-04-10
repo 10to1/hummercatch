@@ -76,15 +76,32 @@ module Hummercatch
       }
     end
 
+    def self.find(login, date = Time.now)
+      h = $redis.hgetall("#{KEY}:#{date.strftime("%Y%m%d")}:#{login.downcase}")
+      return nil if h.empty?
+      h = h.each_with_object({}){|(k,v), h| h[k.to_sym] = v}
+      Order.new(h)
+    end
+
     def garnish?
       !!@garnish
     end
 
+    def to_hash
+      %w(id size garnish sauce bread_type food_id metadata for by quantity ordered_at).inject({}) do |result, key|
+        value = instance_variable_get("@#{key}")
+        result[key] = value if value
+        result
+      end
+    end
+
     def save
-      raise Error, ":by is required" unless options[:by]
-      unless options[:food] || options[:metadata]
+      raise Error, ":by is required" unless @by
+      unless @food_id || @metadata
         raise Error, "Either :food or :metadata is required"
       end
+      date = Time.now.strftime("%Y%m%d")
+      $redis.hmset("#{KEY}:#{date}:#{@by}",to_hash.inject([]){|r,k| r << k; r}.flatten)
     end
 
     def self.combination
