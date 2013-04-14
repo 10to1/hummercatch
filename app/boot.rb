@@ -20,7 +20,6 @@ require 'models/tag'
 require 'models/parser'
 require 'models/token'
 
-require 'hubot'
 
 require 'app'
 

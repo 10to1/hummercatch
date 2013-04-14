@@ -4,9 +4,10 @@ require 'sinatra'
 require "broach"
 require "mail"
 
+require 'hubot'
+
 module Hummercatch
   class App < Sinatra::Base
-
     register Sinatra::Auth::Github
 
     enable :sessions
@@ -29,7 +30,7 @@ module Hummercatch
       :client_id => Hummercatch.config.client_id,
       :failure_app => Octobouncer,
       :organization => Hummercatch.config.gh_org,
-      :github_scopes => 'user,offline_access'
+      :github_scopes => 'user'
     }
 
     Broach.settings = {

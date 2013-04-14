@@ -1,11 +1,14 @@
 GEM
+  remote: https://rubygems.org/
   specs:
     addressable (2.3.2)
     ansi (1.4.2)
+    backports (3.3.0)
     broach (0.2.1)
       json (~> 1.4)
       nap (~> 0.3)
     coderay (1.0.8)
+    eventmachine (1.0.3)
     faraday (0.8.4)
       multipart-post (~> 1.1)
     faraday_middleware (0.9.0)
@@ -66,6 +69,13 @@ GEM
       rack (~> 1.3, >= 1.3.6)
       rack-protection (~> 1.2)
       tilt (~> 1.3, >= 1.3.3)
+    sinatra-contrib (1.3.2)
+      backports (>= 2.0)
+      eventmachine
+      rack-protection
+      rack-test
+      sinatra (~> 1.3.0)
+      tilt (~> 1.3)
     sinatra_auth_github (0.12.0)
       sinatra (~> 1.0)
       warden-github (~> 0.12.0)
@@ -108,6 +118,7 @@ DEPENDENCIES
   rb-fsevent
   redis (~> 3.0.1)
   sinatra
+  sinatra-contrib
   sinatra_auth_github (~> 0.12.0)
   terminal-notifier-guard
   turn (~> 0.9.6)

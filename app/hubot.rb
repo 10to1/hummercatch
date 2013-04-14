@@ -1,49 +1,53 @@
+require "sinatra/namespace"
+
 module Hummercatch
   # Web API just for Hubot.
-  class Hubot < Sinatra::Base
+  class App < Sinatra::Base
+    register Sinatra::Namespace
 
-    get "/all_orders_in" do
+    namespace "/hubot" do
+      get "/all_orders_in" do
 
-    end
+      end
 
-    get "/no_more_orders" do
+      get "/no_more_orders" do
 
-    end
+      end
 
-    get "/no_order_for_me" do
+      get "/no_order_for_me" do
 
-    end
+      end
 
-    post "/order" do
-      order_string = params[:order]
-      s = Parser.new.parse(order_string).collect do |hash|
-        Order.new(hash).to_hubot
-      end.join(" en een ")
-      " => #{s}"
-    end
+      post "/order" do
+        order_string = params[:order]
+        s = Parser.new.parse(order_string).collect do |hash|
+          Order.new(hash).to_hubot
+        end.join(" en een ")
+        " => #{s}"
+      end
 
-    get "/food" do
-      Category.all.inject([]) do |lines, cat|
-        lines << cat.name.upcase
-        lines << ""
-        cat.food.each do |food|
-          lines << "  #{food.name}"
-          unless food.ingredients.empty?
-            lines << "   -> (#{food.ingredients.collect(&:name).join(",")})"
+      get "/food" do
+        Category.all.inject([]) do |lines, cat|
+          lines << cat.name.upcase
+          lines << ""
+          cat.food.each do |food|
+            lines << "  #{food.name}"
+            unless food.ingredients.empty?
+              lines << "   -> (#{food.ingredients.collect(&:name).join(",")})"
+            end
           end
-        end
-        lines << ""
-        lines
-      end.join("\n")
-    end
+          lines << ""
+          lines
+        end.join("\n")
+      end
 
-    post "/order_all" do
+      post "/order_all" do
 
-    end
+      end
 
-    get "/help" do
-      content_type "text/plain"
-      <<-EOS
+      get "/help" do
+        content_type "text/plain"
+        <<-EOS
 (applause|applaud|bravo|slow clap) - Get applause
 <bit.ly link> - returns info about the link (title, created_by)
 <spotify link> - returns info about the link (track, artist, etc.)
@@ -142,6 +146,7 @@ q card - Returns a question
 scotch me - supply a user with scotch
 what memes - gives you a list of all supported meme types.
 EOS
+      end
     end
   end
 end
