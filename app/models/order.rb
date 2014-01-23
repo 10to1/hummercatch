@@ -132,5 +132,9 @@ module Hummercatch
       {:quantity => 1,
         :ordered_at => Time.now}
     end
+
+    def self.all_ids
+      $redis.smembers(KEY)
+    end
   end
 end
