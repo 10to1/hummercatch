@@ -9,9 +9,9 @@ module Hummercatch
     :campfire_token   => (ENV["campfire_token"] || yaml['campfire_token']),
     :campfire_room    => (ENV["campfire_room"] || yaml['campfire_room']),
     :redis_uri        => (ENV["REDISTOGO_URL"] || "redis://127.0.0.1"),
-    :secret           => yaml['gh_secret'],
-    :client_id        => yaml['gh_key'],
-    :gh_org           => yaml['gh_org']
+    :secret           => (ENV["GH_SECRET"] || yaml['gh_secret']),
+    :client_id        => (ENV["GH_KEY"] || yaml['gh_key']),
+    :gh_org           => (ENV["GH_ORG"] || yaml['gh_org'])
   end
 
 private
