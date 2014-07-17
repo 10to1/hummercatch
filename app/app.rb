@@ -112,11 +112,11 @@ module Hummercatch
       end
 
       def speak(message)
-        campfire_room.speak(message)
+        campfire_room.speak message
       end
 
       def paste(message)
-        campfire_room.speak(message)
+        campfire_room.paste message
       end
 
       def campfire_room
