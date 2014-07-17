@@ -130,7 +130,7 @@ module Hummercatch
       mail = Mail.new params[:message]
       speak campfire_message(mail)
       if mail.body
-        paste mail.body
+        paste mail.body.decoded
       end
       status 200
     end
