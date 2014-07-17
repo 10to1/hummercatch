@@ -108,7 +108,7 @@ module Hummercatch
           message = "Great Success: #{message}"
         end
 
-        ":fax: #{message}"
+        ":fax: #{mail.from.addresses} => #{message}"
       end
 
       def speak(message)
