@@ -115,15 +115,23 @@ module Hummercatch
         campfire_room.speak(message)
       end
 
+      def paste(message)
+        campfire_room.speak(message)
+      end
+
       def campfire_room
-        Broach::Room.find_by_name("General")
+        @room ||= Broach::Room.find_by_name("General")
       end
     end
 
     post '/mail' do
       return unless params[:message]
 
-      speak campfire_message(Mail.new(params[:message]))
+      mail = Mail.new params[:message]
+      speak campfire_message(mail)
+      if mail.body
+        paste mail.body
+      end
       status 200
     end
 
